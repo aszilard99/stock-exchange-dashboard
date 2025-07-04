@@ -1,18 +1,19 @@
 package org.com;
 
+import org.com.extract.Extract;
+import org.com.load.Load;
+
 import java.io.IOException;
-import java.net.http.HttpClient;
-import java.net.http.HttpResponse;
 
 public class Main {
     public static void main(String[] args) {
-        try (HttpClient client = HttpClient.newHttpClient()){
+        try {
+            var symbols = Extract.extractSymbols();
+            Load load = new Load("jdbc:postgresql://localhost:5432/chat-room","postgres", "admin");
+            load.loadSymbols(symbols);
 
-
-            String result = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-            System.out.println(result);
-        } catch (InterruptedException | IOException e) {
-            System.out.println("There was an exception" + e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

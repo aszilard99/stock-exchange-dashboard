@@ -9,8 +9,8 @@ public class UriUtils {
     public static URI getUriForSymbolQuery(String url, String apiKey, String function) {
         try {
             var builder = new URIBuilder(url);
-            builder.addParameter("apiKey", apiKey);
             builder.addParameter("function", function);
+            builder.addParameter("apikey", apiKey);
 
             return builder.build();
         } catch (URISyntaxException e){
