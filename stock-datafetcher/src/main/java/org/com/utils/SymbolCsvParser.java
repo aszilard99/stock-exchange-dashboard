@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class SymbolCsvParser {
@@ -43,11 +44,11 @@ public class SymbolCsvParser {
         String name = record.get(1);
         String status = record.get(6);
 
-        return new Symbol(code, name, status);
+        return new Symbol(code, name, Objects.equals(status, "Active"));
     }
 
     private static boolean isValid(Symbol symbol) {
-        return symbol != null && symbol.code() != null && symbol.status() != null;
+        return symbol != null && symbol.code() != null;
     }
 }
 

@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             var symbols = Extract.extractSymbols();
-            Load load = new Load("jdbc:postgresql://localhost:5432/chat-room","postgres", "admin");
+            Load load = new Load("jdbc:postgresql://localhost:5432/stock-exchange-dashboard","postgres", "admin");
             load.loadSymbols(symbols);
 
         } catch (IOException e) {

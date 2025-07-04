@@ -15,20 +15,20 @@ public class Load {
     private final String password;
     private final String url;
 
-    public Load(String username,String password,String url) {
+    public Load(String url, String username, String password) {
         this.username = username;
         this.password = password;
         this.url = url;
     }
 
     public void loadSymbols(List<Symbol> symbols){
-        String sql = "INSERT INTO symbol (code, name, status) VALUES (?, ?)";
+        String sql = "INSERT INTO symbol (code, name, status) VALUES (?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             PreparedStatement ps = connection.prepareStatement(sql);
             for (Symbol symbol : symbols) {
                 ps.setString(1, symbol.code());
                 ps.setString(2, symbol.name());
-                ps.setString(3, symbol.status());
+                ps.setBoolean(3, symbol.status());
                 ps.addBatch();
             }
 

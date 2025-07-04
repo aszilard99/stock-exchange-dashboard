@@ -19,7 +19,16 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
+                  name: code
+                  type: VARCHAR
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
                   name: name
-                  type: varchar(250)
+                  type: VARCHAR
+              - column:
+                  name: status
+                  type: BOOLEAN
                   constraints:
                     nullable: false
