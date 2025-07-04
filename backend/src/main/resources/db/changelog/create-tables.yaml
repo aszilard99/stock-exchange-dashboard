@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Szilard
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: symbol
+      changes:
+        - createTable:
+            tableName: symbol
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(250)
+                  constraints:
+                    nullable: false

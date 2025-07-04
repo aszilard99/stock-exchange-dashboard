@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/create-tables.yaml
+  - include:
+      file: db/changelog/create-time-series-daily-table.yaml
+  - include:
+      file: db/changelog/create-company-quarterly-financials-table.yaml

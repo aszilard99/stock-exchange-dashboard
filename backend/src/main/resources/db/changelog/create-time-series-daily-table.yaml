@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: Szilard
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: time_series_daily
+      changes:
+        - createTable:
+            tableName: time_series_daily
+            columns:
+              - column:
+                  name: symbol_id
+                  type: INT
+                  constraints:
+                    foreignKeyName: fk_time_series_daily_symbol
+                    references: symbol(id)
+                    nullable: false
+              - column:
+                  name: date
+                  type: DATE
+              - column:
+                  name: open
+                  type: DECIMAL
+              - column:
+                  name: close
+                  type: DECIMAL
+              - column:
+                  name: volume
+                  type: INT

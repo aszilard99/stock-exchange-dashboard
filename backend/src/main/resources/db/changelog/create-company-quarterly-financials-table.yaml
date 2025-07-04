@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: Szilard
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: company_financials_quarterly
+      changes:
+        - createTable:
+            tableName: company_financials_quarterly
+            columns:
+              - column:
+                  name: symbolId
+                  type: INT
+                  constraints:
+                    foreignKeyName: fk_time_series_daily_symbol
+                    references: symbol(id)
+                    nullable: false
+              - column:
+                  name: sector
+                  type: VARCHAR
+              - column:
+                  name: analyst_target_price
+                  type: DECIMAL
+              - column:
+                  name: analysts_strong_buy
+                  type: INT
+              - column:
+                  name: analysts_buy
+                  type: INT
+              - column:
+                  name: analysts_hold
+                  type: INT
+              - column:
+                  name: analysts_sell
+                  type: INT
+              - column:
+                  name: analysts_strong_sell
+                  type: INT
+              - column:
+                  name: percent_insiders
+                  type: DECIMAL
+              - column:
+                  name: percent_institutions
+                  type: DECIMAL
+              - column:
+                  name: profit_margin
+                  type: DECIMAL
+              - column:
+                  name: beta
+                  type: DECIMAL
+
