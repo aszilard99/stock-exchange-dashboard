@@ -12,11 +12,11 @@ databaseChangeLog:
             tableName: time_series_daily
             columns:
               - column:
-                  name: symbol_id
-                  type: INT
+                  name: symbol_code
+                  type: VARCHAR
                   constraints:
                     foreignKeyName: fk_time_series_daily_symbol
-                    references: symbol(id)
+                    references: symbol(code)
                     nullable: false
               - column:
                   name: date
