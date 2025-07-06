@@ -1,5 +1,6 @@
 package org.com.pipeline;
 
+import org.com.entity.CompanyOverview;
 import org.com.entity.Symbol;
 import org.com.entity.TimeSeriesDaily;
 import org.com.pipeline.extract.Extract;
@@ -82,8 +83,7 @@ public class Pipeline {
     private void processCompanyOverviewDataForSymbol(String symbol, Load load) {
         try {
             String responseJson = Extract.extractCompanyOverviewData(symbol, BASE_URL, API_KEY, COMPANY_DATA_FUNCTION);
-            List<TimeSeriesDaily> timeSeriesDailies = Transform.transformTimeSeriesDaily(responseJson, symbol);
-            load.loadTimeSeriesDailyForSymbol(timeSeriesDailies, symbol);
+            CompanyOverview companyOverview = Transform.transformCompanyOverviewData(responseJson, symbol);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -3,8 +3,7 @@ package org.com.entity;
 import java.util.Date;
 
 public record CompanyOverview (String symbol,
-                               Date latestQuarter,
-                               String name,
+                               String latestQuarter,
                                String country,
                                String sector,
                                Double analystTargetPrice,

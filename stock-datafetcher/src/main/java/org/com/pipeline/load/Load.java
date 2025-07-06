@@ -1,5 +1,6 @@
 package org.com.pipeline.load;
 
+import org.com.entity.CompanyOverview;
 import org.com.entity.Symbol;
 import org.com.entity.TimeSeriesDaily;
 
@@ -51,6 +52,37 @@ public class Load {
 
             ps.executeBatch();
             logger.info(String.format("Successfully saved time series daily records into the database for %s symbol", symbol));
+        } catch (SQLException e) {
+            logger.severe(String.format("Database batch insert failed with error: %s", e.getMessage()));
+        }
+    }
+
+    public void loadCompanyOverview(CompanyOverview companyOverview, String symbol){
+        String sql = "INSERT INTO company_overview " +
+                     " (symbol_code, sector, analyst_target_price, analysts_strong_buy, " +
+                     " analysts_buy, analysts_hold, analysts_sell, analysts_strong_sell, " +
+                     " percent_insiders, percent_institutions, profit_margin, beta, latest_quarter) " +
+                     " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, symbol);
+            ps.setString(2, companyOverview.sector());
+            ps.setDouble(3, companyOverview.analystTargetPrice());
+            ps.setInt(4, companyOverview.analystStrongBuy());
+            ps.setInt(5, companyOverview.analystBuy());
+            ps.setInt(6, companyOverview.analystHold());
+            ps.setInt(7, companyOverview.analystSell());
+            ps.setInt(8, companyOverview.analystStrongSell());
+            ps.setDouble(9, companyOverview.percentInsiders());
+            ps.setDouble(10, companyOverview.percentInstitutions());
+            ps.setDouble(11, companyOverview.profitMargin());
+            ps.setDouble(12, companyOverview.beta());
+            ps.setDate(13, Date.valueOf(companyOverview.latestQuarter()));
+
+            ps.execute();
         } catch (SQLException e) {
             logger.severe(String.format("Database batch insert failed with error: %s", e.getMessage()));
         }

@@ -33,21 +33,27 @@ public class Extract {
         var uri = UriUtils.getUriForTimeSeriesDailyRequest(baseUrl, apiKey, function, symbol, outputSize);
         logger.info("URL used for time series daily request: " + uri.toString());
         String responseString = null;
+
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
             HttpGet request = new HttpGet(uri);
             try (CloseableHttpResponse response = client.execute(request)) {
                 responseString = EntityUtils.toString(response.getEntity());
             }
-            return responseString;
         }
+        return responseString;
     }
 
-    public static String extractCompanyOverviewData(String symbol, String baseUrl, String apiKey, String function) {
+    public static String extractCompanyOverviewData(String symbol, String baseUrl, String apiKey, String function) throws IOException {
         var uri = UriUtils.getUriForRequestWithSymbol(baseUrl, apiKey, function, symbol);
         logger.info("URL used for company overview request: " + uri.toString());
-
         String responseString = null;
 
+        try(CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            HttpGet reqquest = new HttpGet(uri);
+            try(CloseableHttpResponse response = client.execute(reqquest)) {
+                responseString = EntityUtils.toString(response.getEntity());
+            }
+        }
         return responseString;
     }
 }
