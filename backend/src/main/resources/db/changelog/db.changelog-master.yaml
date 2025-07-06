@@ -5,3 +5,7 @@ databaseChangeLog:
       file: db/changelog/create-time-series-daily-table.yaml
   - include:
       file: db/changelog/create-company-quarterly-financials-table.yaml
+  - include:
+      file: db/changelog/extend-company-quarterly-financials-table-with-date.yaml
+  - include:
+      file: db/changelog/rename-company-quarterly-financials-table.yaml

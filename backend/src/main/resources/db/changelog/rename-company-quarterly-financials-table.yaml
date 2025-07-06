@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: Szilard
+      changes:
+        - renameTable:
+            oldTableName: company_financials_quarterly
+            newTableName: company_overview

@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: Szilard
+      changes:
+        - addColumn:
+            tableName: company_financials_quarterly
+            columns:
+              - column:
+                  name: latest_quarter
+                  type: DATE
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: company_financials_quarterly
+            columnNames: symbol_code, latest_quarter
+            constraintName: uq_symbol_code_latest_quarter
