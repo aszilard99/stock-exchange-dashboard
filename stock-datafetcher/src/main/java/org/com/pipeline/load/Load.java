@@ -64,7 +64,6 @@ public class Load {
                      " percent_insiders, percent_institutions, profit_margin, beta, latest_quarter) " +
                      " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 
-
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             PreparedStatement ps = connection.prepareStatement(sql);
 
@@ -83,6 +82,7 @@ public class Load {
             ps.setDate(13, Date.valueOf(companyOverview.latestQuarter()));
 
             ps.execute();
+            logger.info(String.format("Successfully saved company overview data into the database for %s symbol", symbol));
         } catch (SQLException e) {
             logger.severe(String.format("Database batch insert failed with error: %s", e.getMessage()));
         }
