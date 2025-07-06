@@ -14,9 +14,21 @@ public class UriUtils {
 
             return builder.build();
         } catch (URISyntaxException e){
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
-        return null;
+    }
+
+    public static URI getUriForRequestWithSymbol(String url, String apiKey, String function, String symbol) {
+        try {
+            var builder = new URIBuilder(url);
+            builder.addParameter("function", function);
+            builder.addParameter("apikey", apiKey);
+            builder.addParameter("symbol", symbol);
+
+            return builder.build();
+        } catch (URISyntaxException e){
+            throw new RuntimeException(e);
+        }
     }
 
     public static URI getUriForTimeSeriesDailyRequest(String url, String apiKey, String function, String symbol, String outputSize) {
@@ -29,8 +41,7 @@ public class UriUtils {
 
             return builder.build();
         } catch (URISyntaxException e){
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
-        return null;
     }
 }

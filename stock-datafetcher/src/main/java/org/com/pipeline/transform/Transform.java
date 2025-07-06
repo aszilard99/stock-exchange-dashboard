@@ -1,15 +1,19 @@
-package org.com.transform;
+package org.com.pipeline.transform;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.com.entity.TimeSeriesDaily;
+import org.com.utils.SymbolCsvParser;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Transform {
+    private static final Logger logger = Logger.getLogger(Transform.class.getName());
+
     public static List<TimeSeriesDaily> transformTimeSeriesDaily(String json, String symbol) {
         ObjectMapper objectMapper = new ObjectMapper();
         List<TimeSeriesDaily> timeSeriesDailies = new ArrayList<>();
@@ -36,6 +40,8 @@ public class Transform {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+        logger.info(String.format("Successfully processed %d records for the %s symbol", timeSeriesDailies.size(), symbol));
+
         return timeSeriesDailies;
     }
 }

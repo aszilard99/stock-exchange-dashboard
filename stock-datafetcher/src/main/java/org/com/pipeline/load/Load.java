@@ -1,12 +1,9 @@
-package org.com.load;
+package org.com.pipeline.load;
 
 import org.com.entity.Symbol;
 import org.com.entity.TimeSeriesDaily;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -45,7 +42,7 @@ public class Load {
             PreparedStatement ps = connection.prepareStatement(sql);
             for (TimeSeriesDaily tsd : timeSeriesDailies) {
                 ps.setString(1, symbol);
-                ps.setString(2, tsd.date());
+                ps.setDate(2,Date.valueOf(tsd.date()));
                 ps.setDouble(3, tsd.open());
                 ps.setDouble(4, tsd.close());
                 ps.setLong(5, tsd.volume());
@@ -53,6 +50,7 @@ public class Load {
             }
 
             ps.executeBatch();
+            logger.info(String.format("Successfully saved time series daily records into the database for %s symbol", symbol));
         } catch (SQLException e) {
             logger.severe(String.format("Database batch insert failed with error: %s", e.getMessage()));
         }

@@ -1,6 +1,5 @@
-package org.com.extract;
+package org.com.pipeline.extract;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -12,11 +11,14 @@ import org.com.utils.UriUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Extract {
+    private static final Logger logger = Logger.getLogger(Extract.class.getName());
+
     public static List<Symbol> extractSymbols(String baseUrl, String apiKey, String function) throws IOException {
         var uri = UriUtils.getUriForRequest(baseUrl, apiKey, function);
-        System.out.println("URL used for symbol query: " + uri.toString());
+        logger.info("URL used for symbol request: " + uri.toString());
         String responseString;
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
             HttpGet request = new HttpGet(uri);
@@ -29,14 +31,23 @@ public class Extract {
 
     public static String extractTimeSeriesDailyData(String symbol, String baseUrl, String apiKey, String function, String outputSize) throws IOException {
         var uri = UriUtils.getUriForTimeSeriesDailyRequest(baseUrl, apiKey, function, symbol, outputSize);
-        System.out.println("URL used for time series daily query: " + uri.toString());
+        logger.info("URL used for time series daily request: " + uri.toString());
         String responseString = null;
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
             HttpGet request = new HttpGet(uri);
-            /*try (CloseableHttpResponse response = client.execute(request)) {
+            try (CloseableHttpResponse response = client.execute(request)) {
                 responseString = EntityUtils.toString(response.getEntity());
-            }*/
+            }
             return responseString;
         }
+    }
+
+    public static String extractCompanyOverviewData(String symbol, String baseUrl, String apiKey, String function) {
+        var uri = UriUtils.getUriForRequestWithSymbol(baseUrl, apiKey, function, symbol);
+        logger.info("URL used for company overview request: " + uri.toString());
+
+        String responseString = null;
+
+        return responseString;
     }
 }
