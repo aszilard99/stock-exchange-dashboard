@@ -1,5 +1,6 @@
 package org.com;
 
+import org.com.enums.ProcessResult;
 import org.com.pipeline.Pipeline;
 
 public class Main {
@@ -7,7 +8,11 @@ public class Main {
     public static void main(String[] args) {
         Pipeline etlPipeline = new Pipeline();
 
-        //etlPipeline.processTimeSeriesDaily();
+        var result = etlPipeline.processTimeSeriesDaily();
+
+        if (result == ProcessResult.SHUTDOWN_REQUESTED) {
+            return;
+        }
 
         //etlPipeline.processCompanyOverviewData();
 

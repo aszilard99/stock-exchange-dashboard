@@ -3,6 +3,7 @@ package org.com.pipeline;
 import org.com.entity.CompanyOverview;
 import org.com.entity.Symbol;
 import org.com.entity.TimeSeriesDaily;
+import org.com.enums.ProcessResult;
 import org.com.pipeline.extract.Extract;
 import org.com.pipeline.load.Load;
 import org.com.pipeline.transform.Transform;
@@ -29,36 +30,45 @@ public class Pipeline {
     private final Load load = new Load(DB_URI,DB_USERNAME, DB_PASSWORD);
 
 
-    public void processTimeSeriesDaily() {
-        //List<String> symbols = List.of("AMZN", "DIS", "NVDA", "WMT", "WTBA", "WTFC", "AAPL", "COST", "MCD", "BGR");
-        //List<String> symbols = List.of("ROK", "ROOT", "RPAY", "RPHS", "RPRX", "RRBI", "RSG", "RSSS", "RSVRW", "SABR", "SABSW");
-        //List<String> symbols = List.of("SAVA", "SGMO", "SLAB", "SLF", "SLYG", "SLYV", "SMDV", "SMH", "SOHU", "SPTM", "SPTN");
+    public ProcessResult processTimeSeriesDaily() {
         List<String> symbols = load.getSymbolsWithoutTimeSeriesDailyUpdate();
 
-        symbols.forEach(symbol -> {
-            processTimeSeriesDailyForSymbol(symbol);
+        for (var symbol: symbols) {
+            var result = processTimeSeriesDailyForSymbol(symbol);
+
+            if (result == ProcessResult.SHUTDOWN_REQUESTED) {
+                return result;
+            }
+
             try {
                 Thread.sleep(Duration.of(10, ChronoUnit.SECONDS));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        });
-
+        }
+        return ProcessResult.SUCCESS;
     }
 
-    private void processTimeSeriesDailyForSymbol(String symbol) {
+    private ProcessResult processTimeSeriesDailyForSymbol(String symbol) {
         try {
             String responseJson = Extract.extractTimeSeriesDailyData(symbol, BASE_URL, API_KEY, TIME_SERIES_DAILY_FUNCTION, OUTPUT_SIZE_FULL);
             if (isEmptyResponse(responseJson)) {
                 logger.info(String.format("No response recieved for time series daily request for the symbol %s. No company data exists for this symbol yet, or the daily api usage limit is reached. Skipping this round.", symbol));
-                return;
+                return ProcessResult.SKIPPED;
             }
             List<TimeSeriesDaily> timeSeriesDailies = Transform.transformTimeSeriesDaily(responseJson, symbol);
+            if (timeSeriesDailies.isEmpty()){
+                //TODO Maybe implement a normal shutdown procedure, without controlling expected application flow with exceptions.
+                logger.info("Processed time series daily update count is zero, the daily api limit is reached. Exiting the application.");
+                return ProcessResult.SHUTDOWN_REQUESTED;
+            }
+
             load.loadTimeSeriesDailyForSymbol(timeSeriesDailies, symbol);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return ProcessResult.SUCCESS;
     }
 
     public void processSymbols() {
@@ -74,9 +84,6 @@ public class Pipeline {
     }
 
     public void processCompanyOverviewData() {
-        //List<String> symbols = List.of("AMZN", "DIS", "NVDA", "WMT", "WTBA", "WTFC", "AAPL", "COST", "MCD", "BGR");
-        //List<String> symbols = List.of("ROK", "ROOT", "RPAY", "RPHS", "RPRX", "RRBI", "RSG", "RSSS", "RSVRW", "SABR", "SABSW");
-        //List<String> symbols = List.of("SAVA", "SGMO", "SLAB", "SLF", "SLYG", "SLYV", "SMDV", "SMH", "SOHU", "SPTM", "SPTN");
         List<String> symbols = List.of("SAVA", "SGMO", "SLAB", "SLF", "SLYG", "SLYV", "SMDV", "SMH", "SOHU", "SPTM", "SPTN");
 
         symbols.forEach(symbol -> {
