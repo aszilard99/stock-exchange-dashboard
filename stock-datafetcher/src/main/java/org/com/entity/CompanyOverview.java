@@ -1,7 +1,5 @@
 package org.com.entity;
 
-import java.util.Date;
-
 public record CompanyOverview (String symbol,
                                String latestQuarter,
                                String country,

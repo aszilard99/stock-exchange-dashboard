@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.com.entity.CompanyOverview;
+import org.com.entity.Symbol;
 import org.com.entity.TimeSeriesDaily;
-import org.com.utils.SymbolCsvParser;
+import org.com.service.SymbolCsvReader;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -45,6 +45,10 @@ public class Transform {
         logger.info(String.format("Successfully processed %d records for the %s symbol", timeSeriesDailies.size(), symbol));
 
         return timeSeriesDailies;
+    }
+
+    public static List<Symbol> transformSymbolData(String symbolData){
+        return SymbolCsvReader.readSymbols(symbolData);
     }
 
 

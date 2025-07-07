@@ -33,7 +33,7 @@ public class Pipeline {
         //List<String> symbols = List.of("AMZN", "DIS", "NVDA", "WMT", "WTBA", "WTFC", "AAPL", "COST", "MCD", "BGR");
         //List<String> symbols = List.of("ROK", "ROOT", "RPAY", "RPHS", "RPRX", "RRBI", "RSG", "RSSS", "RSVRW", "SABR", "SABSW");
         //List<String> symbols = List.of("SAVA", "SGMO", "SLAB", "SLF", "SLYG", "SLYV", "SMDV", "SMH", "SOHU", "SPTM", "SPTN");
-        List<String> symbols = List.of("SLF", "SLYG", "SLYV", "SMDV", "SMH", "SOHU", "SPTM", "SPTN");
+        List<String> symbols = List.of();
 
         symbols.forEach(symbol -> {
             processTimeSeriesDailyForSymbol(symbol);
@@ -63,9 +63,23 @@ public class Pipeline {
 
     public void processSymbols() {
         try {
-            List<Symbol> symbols = Extract.extractSymbols(BASE_URL, API_KEY, SYMBOLS_FUNCTION);
+            String symbolData = Extract.extractSymbolData(BASE_URL, API_KEY, SYMBOLS_FUNCTION);
+            List<Symbol> symbols = Transform.transformSymbolData(symbolData);
 
             load.loadSymbols(symbols);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void extendSymbols() {
+        try {
+            String symbolData = Extract.extractSymbolData(BASE_URL, API_KEY, SYMBOLS_FUNCTION);
+            List<Symbol> symbols = Transform.transformSymbolData(symbolData);
+
+            load.loadSymbols(symbols);
+
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -75,6 +89,7 @@ public class Pipeline {
     public void processCompanyOverviewData() {
         //List<String> symbols = List.of("AMZN", "DIS", "NVDA", "WMT", "WTBA", "WTFC", "AAPL", "COST", "MCD", "BGR");
         //List<String> symbols = List.of("ROK", "ROOT", "RPAY", "RPHS", "RPRX", "RRBI", "RSG", "RSSS", "RSVRW", "SABR", "SABSW");
+        //List<String> symbols = List.of("SAVA", "SGMO", "SLAB", "SLF", "SLYG", "SLYV", "SMDV", "SMH", "SOHU", "SPTM", "SPTN");
         List<String> symbols = List.of("SAVA", "SGMO", "SLAB", "SLF", "SLYG", "SLYV", "SMDV", "SMH", "SOHU", "SPTM", "SPTN");
 
         symbols.forEach(symbol -> {
