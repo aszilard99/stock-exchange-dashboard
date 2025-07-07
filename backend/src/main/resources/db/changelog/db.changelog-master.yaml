@@ -11,3 +11,7 @@ databaseChangeLog:
       file: db/changelog/rename-company-quarterly-financials-table.yaml
   - include:
       file: db/changelog/extend_symbols_table.yaml
+  - include:
+      file: db/changelog/rename_symbols_table_columns.yaml
+  - include:
+      file: db/changelog/create_time_series_daily_updates_table.yaml

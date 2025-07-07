@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 7
+      author: Szilard
+      changes:
+        - renameColumn:
+            tableName: symbol
+            oldColumnName: ipoDate
+            newColumnName: ipo_date
+        - renameColumn:
+            tableName: symbol
+            oldColumnName: assetType
+            newColumnName: asset_type
