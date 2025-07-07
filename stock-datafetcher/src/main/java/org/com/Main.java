@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) {
         Pipeline etlPipeline = new Pipeline();
 
-        etlPipeline.processTimeSeriesDaily();
+        //etlPipeline.processTimeSeriesDaily();
 
         //etlPipeline.processCompanyOverviewData();
 

@@ -5,6 +5,8 @@ import org.com.entity.Symbol;
 import org.com.entity.TimeSeriesDaily;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -38,13 +40,13 @@ public class Load {
     }
 
     public void updateSymbols(List<Symbol> symbols){
-        String sql = "INSERT INTO symbol (code, name, status) VALUES (?, ?, ?)";
+        String sql = "UPDATE symbol SET ipo_date = ?, asset_type = ? WHERE code = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             PreparedStatement ps = connection.prepareStatement(sql);
             for (Symbol symbol : symbols) {
-                ps.setString(1, symbol.code());
-                ps.setString(2, symbol.name());
-                ps.setBoolean(3, symbol.status());
+                ps.setDate(1, Date.valueOf(symbol.ipoDate()));
+                ps.setString(2, symbol.assetType());
+                ps.setString(3, symbol.code());
                 ps.addBatch();
             }
 
@@ -69,6 +71,8 @@ public class Load {
 
             ps.executeBatch();
             logger.info(String.format("Successfully saved time series daily records into the database for %s symbol", symbol));
+
+            updateTimeSeriesDailyUpdateStatusForSymbol(symbol, connection);
         } catch (SQLException e) {
             logger.severe(String.format("Database batch insert failed with error: %s", e.getMessage()));
         }
@@ -102,6 +106,47 @@ public class Load {
             logger.info(String.format("Successfully saved company overview data into the database for %s symbol", symbol));
         } catch (SQLException e) {
             logger.severe(String.format("Database batch insert failed with error: %s", e.getMessage()));
+        }
+    }
+
+    //TODO move to another class that, this should only do datatbase saves
+    public List<String> getSymbolsWithoutTimeSeriesDailyUpdate() {
+        String sql = " SELECT code" +
+                     " FROM symbol" +
+                     " WHERE ipo_date < '2005-06-01'" +
+                     " AND status = true" +
+                     " AND code NOT IN (SELECT symbol_code FROM time_series_daily_updates)" +
+                     " LIMIT 25";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet resultSet = ps.executeQuery();
+
+            List<String> symbols = new ArrayList<>();
+            while (resultSet.next()) {
+                symbols.add(resultSet.getString("code"));
+            }
+            logger.info("Successfully queried a batch of symbols without time series daily update. Symbols: " + symbols);
+
+            return symbols;
+        } catch (SQLException e) {
+            logger.severe(String.format("Selecting symbols without time series daily update failed with error: %s", e.getMessage()));
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void updateTimeSeriesDailyUpdateStatusForSymbol(String symbol, Connection connection) {
+        String sql = "INSERT INTO time_series_daily_updates (symbol_code, date) VALUES (?, ?)";
+        try{
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, symbol);
+            ps.setDate(2, Date.valueOf(LocalDate.now()));
+
+            ps.execute();
+            logger.info("Successfully set time series daily updated status for symbol: " + symbol);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
