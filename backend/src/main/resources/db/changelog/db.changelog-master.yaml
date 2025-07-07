@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/extend-company-quarterly-financials-table-with-date.yaml
   - include:
       file: db/changelog/rename-company-quarterly-financials-table.yaml
+  - include:
+      file: db/changelog/extend_symbols_table.yaml

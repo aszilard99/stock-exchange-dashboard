@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 6
+      author: Szilard
+      changes:
+        - addColumn:
+            tableName: symbol
+            columns:
+              - column:
+                  name: ipoDate
+                  type: DATE
+              - column:
+                  name: assetType
+                  type: VARCHAR
